@@ -1,0 +1,51 @@
+<inventario>
+    <producto>
+        <codigo>2</codigo>
+        <descripcion>carpeta carton</descripcion>
+        <codigoProveedor>1</codigoProveedor>
+        <precio>10</precio>
+        <stock>50</stock>
+    </producto>
+    <producto>
+        <codigo>5</codigo>
+        <descripcion>resma A3</descripcion>
+        <codigoProveedor>2</codigoProveedor>
+        <precio>250</precio>
+        <stock>250</stock>
+    </producto>
+    <producto>
+        <codigo>1</codigo>
+        <descripcion>tonner</descripcion>
+        <codigoProveedor>2</codigoProveedor>
+        <precio>350</precio>
+        <stock>200</stock>
+    </producto>
+    <producto>
+        <codigo>2</codigo>
+        <descripcion>cartuchera</descripcion>
+        <codigoProveedor>3</codigoProveedor>
+        <precio>190</precio>
+        <stock>15</stock>
+    </producto>
+    <producto>
+        <codigo>1</codigo>
+        <descripcion>resma A4</descripcion>
+        <codigoProveedor>1</codigoProveedor>
+        <precio>165</precio>
+        <stock>1100</stock>
+    </producto>
+    <producto>
+        <codigo>3</codigo>
+        <descripcion>resma oficio</descripcion>
+        <codigoProveedor>1</codigoProveedor>
+        <precio>152</precio>
+        <stock>500</stock>
+    </producto>
+    <producto>
+        <codigo>1</codigo>
+        <descripcion>queso sardo</descripcion>
+        <codigoProveedor>3</codigoProveedor>
+        <precio>6000</precio>
+        <stock>1</stock>
+    </producto>
+</inventario>

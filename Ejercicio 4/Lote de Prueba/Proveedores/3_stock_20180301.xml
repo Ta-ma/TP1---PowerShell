@@ -1,0 +1,12 @@
+<stock>
+    <producto>
+        <codigo>1</codigo>
+        <descripcion>queso sardo</descripcion>
+        <stock>1</stock>
+    </producto>
+    <producto>
+        <codigo>2</codigo>
+        <descripcion>cartuchera</descripcion>
+        <stock>15</stock>
+    </producto>
+</stock>

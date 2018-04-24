@@ -1,0 +1,7 @@
+<precios>
+    <producto>
+        <codigo>3</codigo>
+        <descripcion>resma oficio</descripcion>
+        <precio porcentaje="true">-5</precio>
+    </producto>
+</precios>

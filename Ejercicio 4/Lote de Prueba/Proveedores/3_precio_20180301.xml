@@ -1,0 +1,12 @@
+<precios>
+    <producto>
+        <codigo>2</codigo>
+        <descripcion>cartuchera</descripcion>
+        <precio>190</precio>
+    </producto>
+    <producto>
+        <codigo>1</codigo>
+        <descripcion>queso sardo</descripcion>
+        <precio>6000</precio>
+    </producto>
+</precios>
