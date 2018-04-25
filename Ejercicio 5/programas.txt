@@ -1,0 +1,4 @@
+kjpowershell_ise
+explorer
+aase
+system
