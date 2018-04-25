@@ -9,6 +9,8 @@ Se ingresa el archivo que contiene las palabras para el juego
 .Parameter nombreJugador
 Se ingresa el nombre del jugador
 .Example
+.\ej6.ps1 .\palabras.txt .\puntajes.csv "Arturo"
+.Example
 (Respuesta correcta)
 barco celular computadora
 

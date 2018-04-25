@@ -149,7 +149,6 @@ foreach ($productoProv in $xmlInv.inventario.producto) {
 
 # obtengo todos los xml del directorio de proveedores
 Get-ChildItem -path $pathDir -recurse -file | Where-Object {$_.Extension -eq '.xml'} | ForEach-Object {
-    $_.BaseName
     $partesNombre = $_.BaseName -split '_'
 
     if ($partesNombre.length -ne 3) {

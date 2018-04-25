@@ -1,19 +1,33 @@
 ﻿<#
 .SYNOPSIS
-     El Script mostrara por pantalla los procesos enviados a travez del parametro -Path (posicion 1)
+     El Script mostrará por pantalla los procesos enviados a través del parámetro -Path (posicion 1)
      Ejercicio5 [-Path] <script> [[-K [-F]][-U][-C]]
 .DESCRIPTION
-    El Script creara una tabla con los datos solicitados por el usuario a travez de -K/-U/-C (exclusivamente una) 
+    El Script creara una tabla con los datos solicitados por el usuario a través de -K/-U/-C (exclusivamente una) 
 
 .EXAMPLE
     Ejercicio5 -path C:\Archivo.txt -K [-F]
-    esta opcion detendra la ejecucion de los procesos que esten dentro del archivo enviado atravez de -Path. El modificador -F fuerza la detencion
+    esta opcion detendra la ejecucion de los procesos que esten dentro del archivo enviado a través de -Path. El modificador -F fuerza la detencion
 .EXAMPLE
     Ejercicio5 -path Archivo.txt -U
-    El script mostrara el PID, el nombre, el porcentaje de uso de CPU, el consumo de memoria y el consumo maximo de memoria.
+    El script mostrará el PID, el nombre, el porcentaje de uso de CPU, el consumo de memoria y el consumo maximo de memoria.
+
 .EXAMPLE
     Ejercicio5 -.\Archivo.txt  -C
-    El script mostrara el PID, el nombre, el porcentaje de uso de CPU.
+    El script mostrará el PID, el nombre, el porcentaje de uso de CPU.
+.NOTES
+    Sistemas Operativos
+    --------------------
+    Trabajo Práctico N°1
+    Ejercicio 5
+    Script: Ejercicio5.ps1
+    --------------------
+    Integrantes:
+        .Kuczerawy, Damián - 37.807.869
+        .Gómez Markowicz, Federico - 38.858.109
+        .Siculin, Luciano - 39.213.320
+        .Mediotte, Facundo - 39.436.162
+        .Tamashiro, Santiago - 39.749.147
 #>
 Param([Parameter(Mandatory=$true, position=1)][ValidateScript({Test-Path $_ })][string]$path,
       [Parameter()]#ParameterSetName="Set1")]
@@ -24,17 +38,30 @@ Param([Parameter(Mandatory=$true, position=1)][ValidateScript({Test-Path $_ })][
       [switch]$K,
       [Parameter()]
       [switch]$F
-      )
-if(-not($C -xor ($U -xor $K))){ (Get-Date -Format "yyyy/mm/dd - HH:mm:ss") + " | No se enviaron correctamente los parametros."  >> "Log.txt"
-                                throw [System.ArgumentException]::New('No se enviaron correctamente los parametros. Puede visualizar la ayuda y ejemplos del Script utilizando get-help')}
-if($F -and -not $K){
-throw [System.ArgumentException]::New('El paramero -F solo puede ser utilizado para forzar la detencion de procesos... por lo tanto solo es posible la combinacion -K -F')}
+)
+
+$var = 0
+if($U) {$var++}
+if($C) {$var++}
+if($K) {$var++}
+
+if($var -ne 1) { 
+    (Get-Date -Format g) + " | No se enviaron correctamente los parametros."  >> "Log.txt"
+    Write-Error 'No se enviaron correctamente los parametros. Puede visualizar la ayuda y ejemplos del Script utilizando get-help'
+    return;
+}
+
+if($F -and -not $K) {
+    Write-Error 'El paramero -F solo puede ser utilizado para forzar la detencion de procesos... por lo tanto solo es posible la combinacion -K -F'
+    return;
+}
+
 #inicio las variables para tenerlas globalmente
 $mipid=$micpu=$miram=$miramM=$nombre=$mensaje=""
 $tabla=@()
 (Get-Content $path).Replace('.exe','') | foreach{try{
     $nombre=$_
-    $hora=(Get-Date -Format "yyyy/mm/dd - HH:mm:ss")
+    $hora=(Get-Date -Format g)
     if($K){    if($F) {Stop-Process -Name $_ -Force -ErrorAction Stop} 
                else   {Stop-Process -Name $_ -ErrorAction Stop}} 
     #se opto por usar el caracter comodin * para en caso de tener mas de un proceso con el mismo nombre tambien se incluya en la tabla

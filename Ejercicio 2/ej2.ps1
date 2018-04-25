@@ -39,8 +39,12 @@ if (-not (Test-Path $path)) {
 # creo la hashtable que contendrá las palabras
 $h = @{}
 
+# contador de archivos
+$contador = 0
 # obtengo todos los archivos de extensión .html que se encuentran dentro de #path e itero
 Get-ChildItem -path $path -recurse -file | Where-Object {$_.Extension -eq '.html'} | ForEach-Object {
+    # incremento contador
+    $contador++
     # guardo su contenido
     $contenido = Get-Content $_.FullName -Raw
     # extraigo la frase que se encuentra entre '<title>' y '</title>'
@@ -67,6 +71,8 @@ Get-ChildItem -path $path -recurse -file | Where-Object {$_.Extension -eq '.html
     }
 }
 
+Write-Output "Archivos analizados: $contador"
+Write-Output "Resultados: "
 # finalmente, ordeno la hashtable por valor en sentido descendente y selecciono las primeras 5 entradas
 $h.GetEnumerator() | Sort-Object value -Descending | Select-Object -First 5 | ForEach-Object {
     Write-Output $_

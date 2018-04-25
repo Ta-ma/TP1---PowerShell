@@ -31,12 +31,11 @@ Kuczerawy, Damián - 37807869
 Mediotte, Facundo - 39436162
 Siculin, Luciano - 39213320
 Tamashiro, Santiago - 39749147
-
 #>
 
+#a- Esta funcion recibe una direccion y te dice la cantidad de archivos que en su path contenga un número.
 
-
-#Ejercicio 1-b
+#b-
 
 Param(
     [Parameter(Mandatory = $False)][ValidateNotNullOrEmpty()]$path 
@@ -57,10 +56,6 @@ if(Test-Path $path) {  #verifica si el path es correcto
 else {
     Write-Output 'El path es incorrecto'
 }
-
-#a- Esta funcion recibe una direccion y te dice la cantidad de archivos que en su path contenga un número.
-
-#b- La validación Test-Path sería util agregarla para verificar su existencia.
 
 #c- El opreador match compara dos string y devuelve TRUE si los dos string son iguales o si uno está incluido dentro del otro.
 
