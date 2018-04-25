@@ -1,3 +1,5 @@
+# generador de lote de prueba para ejercicio 2
+
 Param(
     [Parameter(Mandatory=$true)]
     [ValidateLength(1, 255)]
@@ -10,12 +12,13 @@ if (-not (Test-Path $path)) {
     return
 }
 
-$palabras = 'banana', 'manzana', 'pera', 'naranja', 'tomate', 'mandarina', 'khaki', 'ciruela', 'cereza', 'kiwi'
+$palabras = 'banana', 'manzana', 'pera', 'naranja', 'tomate', 'mandarina', 'khaki', 'ciruela', 'cereza', 'kiwi',
+            'a', 'ante', 'bajo', 'con', 'contra', 'de', 'desde'
 
 for ($i = 1; $i -le 100; $i++) {
     $frase = ''
     for ($j = 1; $j -le 10; $j++) {
-        $ran = Get-Random -Maximum 10
+        $ran = Get-Random -Maximum $palabras.Length
         $frase = ($frase + $palabras[$ran] + " ")
     }
     #$frase = $frase.Trim()

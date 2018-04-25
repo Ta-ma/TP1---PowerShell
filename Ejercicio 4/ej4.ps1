@@ -1,4 +1,17 @@
 <#
+    .Synopsis
+    Actualiza el archivo de inventario XML especificado con los archivos del proveedor.
+    
+    .Description
+    Busca en el directorio todos los archivos XML con información de entregas de los proveedores
+    y utiliza la información de estos para actualizar el precio y stock del archivo XML especificado.
+    Los archivos del proveedor deben tener el siguiente formato:
+        <codProveedor>_precio_<fecha>.xml o <codProveedor>_stock_<fecha>.xml
+
+    .Example
+    .\ej4.ps1 ".\Lote de Prueba\inventario.xml" ".\Lote de Prueba\Proveedores"
+
+    .Notes
     Sistemas Operativos
     --------------------
     Trabajo Práctico N°1
@@ -11,18 +24,6 @@
         .Siculin, Luciano - 39.213.320
         .Mediotte, Facundo - 39.436.162
         .Tamashiro, Santiago - 39.749.147
-#>
-
-<#
-    .Synopsis
-    Actualiza el archivo de inventario XML especificado con los archivos del proveedor.
-    .Description
-    Busca en el directorio todos los archivos XML con información de entregas de los proveedores
-    y utiliza la información de estos para actualizar el precio y stock del archivo XML especificado.
-    Los archivos del proveedor deben tener el siguiente formato:
-        <codProveedor>_precio_<fecha>.xml o <codProveedor>_stock_<fecha>.xml
-    .Example
-    .\ej4.ps1 ".\Lote de Prueba\inventario.xml" ".\Lote de Prueba\Proveedores"
 #>
 
 Param(
