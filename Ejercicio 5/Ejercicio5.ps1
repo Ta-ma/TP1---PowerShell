@@ -47,19 +47,28 @@ if($K) {$var++}
 
 if($var -ne 1) { 
     (Get-Date -Format g) + " | No se enviaron correctamente los parametros."  >> "Log.txt"
-    Write-Error 'No se enviaron correctamente los parametros. Puede visualizar la ayuda y ejemplos del Script utilizando get-help'
+    Write-Error 'No se enviaron correctamente los parámetros. Puede visualizar la ayuda y ejemplos del Script utilizando Get-Help'
     return;
 }
 
 if($F -and -not $K) {
-    Write-Error 'El paramero -F solo puede ser utilizado para forzar la detencion de procesos... por lo tanto solo es posible la combinacion -K -F'
+    Write-Error 'El parámetro -F solo puede ser utilizado para forzar la detención de procesos... por lo tanto solo es posible la combinación -K -F'
     return;
 }
 
 #inicio las variables para tenerlas globalmente
 $mipid=$micpu=$miram=$miramM=$nombre=$mensaje=""
 $tabla=@()
-(Get-Content $path).Replace('.exe','') | foreach{try{
+$content = Get-Content $path
+
+if ($content -eq $null) {
+    $mensaje = ("$(Get-Date -Format g)" + " | El archivo de procesos está vacío.")
+    Add-Content "log.txt" $mensaje
+    $mensaje
+    return;
+}
+
+$content.Replace('.exe','') | foreach{ try {
     $nombre=$_
     $hora=(Get-Date -Format g)
     if($K){    if($F) {Stop-Process -Name $_ -Force -ErrorAction Stop} 
@@ -73,19 +82,18 @@ $tabla=@()
                             
         if($C){ $mipid | foreach{ $tabla += New-Object PSObject -Property @{Nombre=(Get-Process -Id $_).Name.ToString() ;ID=$_ ;Uso_CPU=$micpu[$i++]}}}
         if($U){ $mipid | foreach{ $tabla += New-Object PSObject -Property @{Nombre=(Get-Process -Id $_).Name.ToString() ;ID=$_ ;Uso_CPU=$micpu[$i] ;Uso_De_Memoria=$miram[$i]/1024000 ;Uso_Maximo_De_Memoria=$miramM[$i++]/1024000}}}
-    }catch{ $error=$_  #atrapo la exepcion para poder cargarlo al archivo log.txt que se encuentra en la ruta de ejecucion
-            $mipid|foreach{if($error.exception.message -eq "No se puede enlazar el argumento al parámetro 'Id' porque es nulo.")
-                                {$mensaje+="$hora | El proceso indicado ($nombre) no es valido o no se encuentra ejecutando`r`n"}
-                           else{                 
-                                if($_ -ne $null){$mensaje+="$hora | "+$error.exception.message+"`r`n"}
-                                else            {$mensaje+="$hora | "+$error.exception.message+"`r`n"}}}}
+    } catch { 
+        $error=$_  #atrapo la exepcion para poder cargarlo al archivo log.txt que se encuentra en la ruta de ejecucion
+        $mipid | foreach {
+            if($error.exception.message) { 
+                $mensaje = "$hora | El proceso indicado ($nombre) no es válido o no se encuentra ejecutando."
+                Add-Content "log.txt" $mensaje
+                $mensaje
+            }
+        }
+    }
 }
 
-if($mensaje.length -ne 0){ 
-    $mensaje | Out-File "log.txt" -Append -NoNewline
-    $mensaje
-}
-
-#formateo la salida, este paso se puede omitir... es simplemente por estetica... una salida mas simple seria "return $tabla" o simplemente "$tabla" para unicamente mostrarla por pantalla
+#formateo la salida, este paso se puede omitir... es simplemente por estética... una salida más simple seria "return $tabla" o simplemente "$tabla" para únicamente mostrarla por pantalla
 if($C) {return $tabla | Format-Table -Property ID, Nombre, Uso_CPU}
 if($U) {return $tabla | Format-Table -Property ID, Nombre, Uso_CPU, Uso_De_Memoria, Uso_Maximo_De_Memoria}
