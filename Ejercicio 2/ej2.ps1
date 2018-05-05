@@ -47,34 +47,41 @@ Get-ChildItem -path $path -recurse -file | Where-Object {$_.Extension -eq '.html
     $contador++
     # guardo su contenido
     $contenido = Get-Content $_.FullName -Raw
-    # extraigo la frase que se encuentra entre '<title>' y '</title>'
-    $titulo = [regex]::match($contenido, '(?<=<title>).*?(?=</title>)').Groups[0].value
-    # uso trim para sacarle espacios de más si es que los hay
-    $titulo = $titulo.Trim()
-    # obtengo las palabras que componen la frase
-    $palabras = $titulo -split ' '
-    # array con palabras que deben ignorarse
-    $palabrasProhibidas = 'a', 'ante', 'bajo', 'con', 'contra', 'de', 'desde',
-     'durante', 'en', 'entre', 'hacia', 'hasta', 'para', 'por', 'según', 'sin', 'sobre', 'tras'
-    # itero sobre las palabras
-    foreach($p in $palabras) {
-        # si está en las palabras prohibidas no la incluyo
-        if(-not $palabrasProhibidas.Contains($p)) {
-            if($h.ContainsKey($p)) {
-                # si ya existe, le sumo 1 a la entrada correspondiente en la hashtable
-                $h[$p]++
-            } else {
-                # si no existe, la agrego
-                $h.Add($p, 1)
+    if ($contenido -ne $null) {
+        # extraigo la frase que se encuentra entre '<title>' y '</title>'
+        $titulo = [regex]::match($contenido, '(?<=<title>).*?(?=</title>)').Groups[0].value
+        # uso trim para sacarle espacios de más si es que los hay
+        $titulo = $titulo.Trim()
+        # obtengo las palabras que componen la frase
+        $palabras = $titulo -split ' '
+        # array con palabras que deben ignorarse
+        $palabrasProhibidas = 'a', 'ante', 'bajo', 'con', 'contra', 'de', 'desde',
+        'durante', 'en', 'entre', 'hacia', 'hasta', 'para', 'por', 'según', 'sin', 'sobre', 'tras'
+        # itero sobre las palabras
+        foreach($p in $palabras) {
+            # si está en las palabras prohibidas no la incluyo
+            if(-not [string]::IsNullOrEmpty($p) -and -not $palabrasProhibidas.Contains($p)) {
+                if($h.ContainsKey($p)) {
+                    # si ya existe, le sumo 1 a la entrada correspondiente en la hashtable
+                    $h[$p]++
+                } else {
+                    # si no existe, la agrego
+                    $h.Add($p, 1)
+                }
             }
         }
     }
 }
 
 Write-Output "Archivos analizados: $contador"
-Write-Output "Resultados: "
 # finalmente, ordeno la hashtable por valor en sentido descendente y selecciono las primeras 5 entradas
-$h.GetEnumerator() | Sort-Object value -Descending | Select-Object -First 5 | ForEach-Object {
-    Write-Output $_
+if ($h.count -gt 0) {
+    Write-Output "Resultados: "
+    $h.GetEnumerator() | Sort-Object value -Descending | Select-Object -First 5 | ForEach-Object {
+        Write-Output $_
+    }
+} else {
+    Write-Output "No hay palabras para mostrar!"
 }
+
 <#  Fin de Archivo  #>
