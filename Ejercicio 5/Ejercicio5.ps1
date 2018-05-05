@@ -29,7 +29,7 @@
         .Mediotte, Facundo - 39.436.162
         .Tamashiro, Santiago - 39.749.147
 #>
-Param([Parameter(Mandatory=$true, position=1)][ValidateScript({Test-Path $_ })][string]$path,
+Param([Parameter(Mandatory=$true, position=1)][string]$path,
       [Parameter()]#ParameterSetName="Set1")]
       [switch]$U,
       [Parameter()]#ParameterSetName="Set2")]
@@ -39,6 +39,17 @@ Param([Parameter(Mandatory=$true, position=1)][ValidateScript({Test-Path $_ })][
       [Parameter()]
       [switch]$F
 )
+
+if (-not (Test-Path $path)) {
+    Write-Error 'El archivo no existe.'
+    return
+}
+
+$extension = [IO.Path]::GetExtension($path)
+if ($extension -ne '.txt') {
+    Write-Error 'La extensión del archivo no es correcta (solo se permiten archivos .txt).'
+    return
+}
 
 $var = 0
 if($U) {$var++}
@@ -68,7 +79,7 @@ if ($content -eq $null) {
     return;
 }
 
-$content.Replace('.exe','') | foreach{ try {
+$content.Replace('.exe','') | foreach { try {
     $nombre=$_
     $hora=(Get-Date -Format g)
     if($K){    if($F) {Stop-Process -Name $_ -Force -ErrorAction Stop} 
