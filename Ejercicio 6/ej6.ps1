@@ -55,6 +55,17 @@ Param(
     [string]$nombreJugador
 )
 
+if (-not (Test-Path $path)) {
+    Write-Error 'El archivo no existe.'
+    return
+}
+
+$extension = [IO.Path]::GetExtension($path)
+if ($extension -ne '.txt') {
+    Write-Error 'La extensión del archivo no es correcta (solo se permiten archivos .txt).'
+    return
+}
+
 function Get-Answer {
     $key = '';
     $first = $true;
