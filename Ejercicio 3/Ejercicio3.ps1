@@ -31,70 +31,75 @@
             .Tamashiro, Santiago - 39.749.147
 #>
 
-Param([Parameter(Mandatory=$true)][string]$DireccionArchivo
-     ,[Parameter(Mandatory=$true)][string]$Log
+Param([Parameter(Mandatory=$true)][string]$direccionArchivo
+     ,[Parameter(Mandatory=$true)][string]$log
      ,[Parameter(Mandatory=$true)][string]$proceso)
 
-$DireccionArchivo = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($DireccionArchivo)
-$Log = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Log)
+$direccionArchivo = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($direccionArchivo)
+$log = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($log)
 
-if (-not (Test-Path $pathDir)) {
+if (-not (Test-Path $direccionArchivo)) {
     Write-Error 'El archivo a modificar no existe.'
     return
 }
 
 $comando = { 
-Param([string]$DireccionArchivo
-     ,[string]$Log
+Param([string]$direccionArchivo
+     ,[string]$log
      ,[string]$proceso)
 
-    $directorio = Split-Path -parent $DireccionArchivo
+    $directorio = Split-Path -parent $direccionArchivo
 
     if($proceso.Contains(".")){$process = $proceso.Remove($proceso.LastIndexOf("."))} else {$process = $proceso}
     
-    if((Get-Process).Name.ToUpper().Contains($process.ToUpper()))
-    {
-        Wait-Process -Name $process
-        $cant=0
-        $line=""
-        #$archivo = Get-Content $DireccionArchivo
+    if((Get-Process).Name.ToUpper().Contains($process.ToUpper())) {
+        try {
+            Wait-Process -Name $process
+            $cant=0
+            $line=""
+            #$archivo = Get-Content $direccionArchivo
 
-        (Get-Content $DireccionArchivo).Split("`n") | ForEach{
-            if($line.Length -ne 0){$line += "`r`n"}
-            $_.Split('.') | ForEach{
-                [string]$aux=$_
-                while($aux[0] -eq ' ')
-                {
-                    $line += ' '
-                    $aux=$aux.Substring(1)
-                }
-                if($aux[0] -ge 97 -and $aux[0] -le 126)
-                { 
-                    $cant++
-                    $line += ([string]$aux[0]).ToUpper()
-                    if($aux.Length -ge 2)
+            (Get-Content $direccionArchivo).Split("`n") | ForEach {
+                if($line.Length -ne 0) { $line += "`r`n" }
+                $_.Split('.') | ForEach {
+                    [string]$aux=$_
+                    while($aux[0] -eq ' ')
                     {
-                        $line+=$aux.Substring(1)
+                        $line += ' '
+                        $aux=$aux.Substring(1)
                     }
-                }
-                else
-                {
-                    $line += $aux
-                }
-                if(-not $line.EndsWith('.'))
-                {
-                    $line+='.'
-                }
-            } 
-        }
+                    if($aux[0] -ge 97 -and $aux[0] -le 126)
+                    { 
+                        $cant++
+                        $line += ([string]$aux[0]).ToUpper()
+                        if($aux.Length -ge 2)
+                        {
+                            $line+=$aux.Substring(1)
+                        }
+                    }
+                    else 
+                    {
+                        $line += $aux
+                    }
+                    if(-not $line.EndsWith('.')) 
+                    {
+                        $line+='.'
+                    }
+                } 
+            }
 
-        $nombreArchivo = (Split-Path $DireccionArchivo -leaf).Replace('.','_modif.')
-        $dirNuevoArchivo = ($directorio + "\" + $nombreArchivo)
-        Set-Content $dirNuevoArchivo -value $line
-        #$line | Out-File $dirNuevoArchivo -NoNewline
-        (Get-Date -Format "yyyy/mm/dd - hh:mm:ss  " )+ $DireccionArchivo.subString($DireccionArchivo.lastindexof('\')+1) + "  $cant"  >> $Log  
+            $nombreArchivo = (Split-Path $direccionArchivo -leaf)
+            $nombreArchivoNuevo = (Split-Path $direccionArchivo -leaf).Replace('.','_modif.')
+            $dirNuevoArchivo = ($directorio + "\" + $nombreArchivoNuevo)
+            Set-Content $dirNuevoArchivo -value $line
+            Add-Content $log ((Get-Date -Format g ) + " | " + $nombreArchivo + " Se realizaron $cant modificaciones.")
+        } catch {
+            Add-Content $log ((Get-Date -Format g ) + " | " + ($_.exception.message))
+        }
+    } else {
+        Add-Content $log ((Get-Date -Format g ) + " | El proceso $process no existe o no se encuentra ejecutando.")
     }
 } 
-Start-Job -ScriptBlock $comando -ArgumentList $DireccionArchivo, $Log, $proceso -Name "Espero a $Proceso"
+Start-Job -ScriptBlock $comando -ArgumentList $direccionArchivo, $log, $proceso -Name "Espero a $Proceso"
 
 <# Fin de archivo #>
