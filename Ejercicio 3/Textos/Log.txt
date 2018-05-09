@@ -1,3 +1,5 @@
 06/05/2018 11:06 | El proceso no existe o no se encuentra ejecutando.
 06/05/2018 11:07 | El proceso Notepad no existe o no se encuentra ejecutando.
 06/05/2018 11:13 | Archivo.txt Se realizaron 8 modificaciones.
+09/05/2018 10:13 | El proceso Notepad no existe o no se encuentra ejecutando.
+09/05/2018 10:13 | Archivo.txt Se realizaron 8 modificaciones.

@@ -16,6 +16,8 @@
         Ejercicio3 -DireccionArchivo .\Archivo.txt -Log C:\Log.txt -Proceso "Notepad"
     .Example
         Ejercicio3 -DireccionArchivo .\Archivo.txt -Log .\Log.txt -Proceso "Notepad.exe"
+    .Example
+        .\Ejercicio3.ps1 -DireccionArchivo .\Textos\Archivo.txt -Log .\Textos\Log.txt -Proceso "Notepad"
     .Notes
         Sistemas Operativos
         --------------------
