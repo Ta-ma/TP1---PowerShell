@@ -45,6 +45,18 @@ if (-not (Test-Path $direccionArchivo)) {
     return
 }
 
+$extension = [IO.Path]::GetExtension($direccionArchivo)
+if ($extension -ne '.txt') {
+    Write-Error 'La extensión del archivo a modificar no es válida (solo se permiten archivos .txt).'
+    return
+}
+
+$extension = [IO.Path]::GetExtension($log)
+if ($extension -ne '.txt') {
+    Write-Error 'La extensión del archivo de log no es válida (solo se permiten archivos .txt).'
+    return
+}
+
 $comando = { 
 Param([string]$direccionArchivo
      ,[string]$log
@@ -65,26 +77,19 @@ Param([string]$direccionArchivo
                 if($line.Length -ne 0) { $line += "`r`n" }
                 $_.Split('.') | ForEach {
                     [string]$aux=$_
-                    while($aux[0] -eq ' ')
-                    {
+                    while($aux[0] -eq ' ') {
                         $line += ' '
                         $aux=$aux.Substring(1)
                     }
-                    if($aux[0] -ge 97 -and $aux[0] -le 126)
-                    { 
+                    if($aux[0] -ge 97 -and $aux[0] -le 126) { 
                         $cant++
                         $line += ([string]$aux[0]).ToUpper()
-                        if($aux.Length -ge 2)
-                        {
+                        if($aux.Length -ge 2) {
                             $line+=$aux.Substring(1)
                         }
-                    }
-                    else 
-                    {
+                    } else {
                         $line += $aux
-                    }
-                    if(-not $line.EndsWith('.')) 
-                    {
+                    } if(-not $line.EndsWith('.')) {
                         $line+='.'
                     }
                 } 
@@ -95,13 +100,21 @@ Param([string]$direccionArchivo
             $dirNuevoArchivo = ($directorio + "\" + $nombreArchivoNuevo)
             Set-Content $dirNuevoArchivo -value $line
             Add-Content $log ((Get-Date -Format g ) + " | " + $nombreArchivo + " Se realizaron $cant modificaciones.")
+            return "El archivo modificado se generó correctamente."
         } catch {
             Add-Content $log ((Get-Date -Format g ) + " | " + ($_.exception.message))
+            return "Ocurrió un error. Vea el archivo de log para ver más detalles."
         }
     } else {
         Add-Content $log ((Get-Date -Format g ) + " | El proceso $process no existe o no se encuentra ejecutando.")
+        return "Ocurrió un error. Vea el archivo de log para ver más detalles."
     }
 } 
-Start-Job -ScriptBlock $comando -ArgumentList $direccionArchivo, $log, $proceso -Name "Espero a $Proceso"
+
+$job = Start-Job -ScriptBlock $comando -ArgumentList $direccionArchivo, $log, $proceso -Name "Espero a $Proceso"
+Write-Output "Esperando al proceso $Proceso"
+$null = Wait-Job $job
+$salida = Receive-Job $job
+Write-Output $salida
 
 <# Fin de archivo #>

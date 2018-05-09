@@ -62,10 +62,15 @@ if (-not (Test-Path $path)) {
 
 $extension = [IO.Path]::GetExtension($path)
 if ($extension -ne '.txt') {
-    Write-Error 'La extensión del archivo no es correcta (solo se permiten archivos .txt).'
+    Write-Error 'La extensión del archivo de palabras no es correcta (solo se permiten archivos .txt).'
     return
 }
 
+$extension = [IO.Path]::GetExtension($pathPuntajes)
+if ($extension -ne '.csv') {
+    Write-Error 'La extensión del archivo de puntajes no es correcta (solo se permiten archivos .csv).'
+    return
+}
 function Get-Answer {
     $key = '';
     $first = $true;
@@ -107,12 +112,7 @@ function Get-Answer {
     }
     return $fullString;
 }
-
-
-#$path = 'palabras.txt';
-$pathPuntajes = 'puntajes.csv'
 $palabras = Get-Content $path;    #Obtiene el contenido del archivo
-
 
 #Verifica si el archivo esta vacio
 if($palabras.Length -eq 0){

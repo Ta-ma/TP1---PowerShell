@@ -155,3 +155,5 @@ $id = Start-Job -ScriptBlock $comando -ArgumentList $path, $U, $C, $K, $F -Name 
 $null = Wait-Job $id
 $salida = Receive-Job $id
 Write-Output $salida
+
+<# Fin de archivo #>
